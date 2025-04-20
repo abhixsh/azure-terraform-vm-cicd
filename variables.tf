@@ -1,5 +1,5 @@
 variable "prefix" {
-  default = "tfvm"
+  default = "tfstate-mlsa"
 }
 
 variable "location" {
@@ -8,8 +8,10 @@ variable "location" {
 
 variable "admin_username" {
   type = string
+  sensitive = true
 }
 
 variable "admin_password" {
   type = string
+  sensitive = true
 }

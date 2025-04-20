@@ -8,8 +8,8 @@ terraform {
   }
 
   backend "azurerm" {
-    resource_group_name  = "tfstate-rg"
-    storage_account_name = "tfstatestorageabhix123"   
+    resource_group_name  = "tfstate-mlsa"
+    storage_account_name = "tfstatestoragemlsa123"   
     container_name       = "tfstate"
     key                  = "terraform.tfstate"
   }
@@ -21,7 +21,7 @@ provider "azurerm" {
 }
 
 # Resource Group
-resource "azurerm_resource_group" "example" {
+resource "azurerm_resource_group" "resourcegroup" {
   name     = "${var.prefix}-resources"
   location = var.location
 }
@@ -30,14 +30,14 @@ resource "azurerm_resource_group" "example" {
 resource "azurerm_virtual_network" "main" {
   name                = "${var.prefix}-vnet"
   address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.resourcegroup.location
+  resource_group_name = azurerm_resource_group.resourcegroup.name
 }
 
 # Subnet
 resource "azurerm_subnet" "internal" {
   name                 = "internal-subnet"
-  resource_group_name  = azurerm_resource_group.example.name
+  resource_group_name  = azurerm_resource_group.resourcegroup.name
   virtual_network_name = azurerm_virtual_network.main.name
   address_prefixes     = ["10.0.2.0/24"]
 }
@@ -45,8 +45,8 @@ resource "azurerm_subnet" "internal" {
 # Network Interface
 resource "azurerm_network_interface" "main" {
   name                = "${var.prefix}-nic"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.resourcegroup.location
+  resource_group_name = azurerm_resource_group.resourcegroup.name
 
   ip_configuration {
     name                          = "ipconfig1"
@@ -58,8 +58,8 @@ resource "azurerm_network_interface" "main" {
 # Virtual Machine
 resource "azurerm_virtual_machine" "main" {
   name                  = "${var.prefix}-vm"
-  location              = azurerm_resource_group.example.location
-  resource_group_name   = azurerm_resource_group.example.name
+  location              = azurerm_resource_group.resourcegroup.location
+  resource_group_name   = azurerm_resource_group.resourcegroup.name
   network_interface_ids = [azurerm_network_interface.main.id]
   vm_size               = "Standard_DS1_v2"
 
