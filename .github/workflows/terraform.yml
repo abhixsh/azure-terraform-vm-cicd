@@ -39,7 +39,10 @@ jobs:
       - name: Terraform Plan
         run: |
           terraform plan \
-            -backend-config="access_key=${{ secrets.STORAGE_ACCOUNT_KEY }}" \
+            -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
+            -var="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
+            -var="client_id=${{ secrets.AZURE_CLIENT_ID }}" \
+            -var="client_secret=${{ secrets.AZURE_CLIENT_SECRET }}" \
             -var="admin_username=${{ secrets.ADMIN_USERNAME }}" \
             -var="admin_password=${{ secrets.ADMIN_PASSWORD }}"
 
