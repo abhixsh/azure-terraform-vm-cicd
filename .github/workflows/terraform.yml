@@ -28,6 +28,11 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: check if Azure login was successful
+        run: |
+          az account show
+          az account list
+
       - name: Terraform Init
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
