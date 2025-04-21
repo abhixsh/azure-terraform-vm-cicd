@@ -28,21 +28,22 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: check if Azure login was successful
-        run: |
-          az account show
-          az account list
-
       - name: Terraform Init
         run: |
-            terraform init \
+          terraform init \
             -backend-config="access_key=${{ secrets.STORAGE_ACCOUNT_KEY }}"
 
       - name: Terraform Validate
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan
+        run: |
+          terraform plan \
+            -var="admin_username=${{ secrets.ADMIN_USERNAME }}" \
+            -var="admin_password=${{ secrets.ADMIN_PASSWORD }}"
 
       # - name: Terraform Apply
-      #   run: terraform apply -auto-approve
+      #   run: |
+      #     terraform apply -auto-approve \
+      #       -var="admin_username=${{ secrets.ADMIN_USERNAME }}" \
+      #       -var="admin_password=${{ secrets.ADMIN_PASSWORD }}"
