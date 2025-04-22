@@ -1,4 +1,4 @@
-# Declare Terraform and backend
+# Declare Azure Provider and Storage
 terraform {
   required_providers {
     azurerm = {
@@ -51,7 +51,16 @@ resource "azurerm_subnet" "internal" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
-# Network Interface
+# Public IP
+resource "azurerm_public_ip" "main" {
+  name                = "${var.prefix}-public-ip"
+  location            = azurerm_resource_group.resourcegroup.location
+  resource_group_name = azurerm_resource_group.resourcegroup.name
+  allocation_method   = "Static"
+  sku                 = "Basic"
+}
+
+# Network Interface with public IP
 resource "azurerm_network_interface" "main" {
   name                = "${var.prefix}-nic"
   location            = azurerm_resource_group.resourcegroup.location
@@ -61,6 +70,7 @@ resource "azurerm_network_interface" "main" {
     name                          = "ipconfig1"
     subnet_id                     = azurerm_subnet.internal.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.main.id
   }
 }
 
